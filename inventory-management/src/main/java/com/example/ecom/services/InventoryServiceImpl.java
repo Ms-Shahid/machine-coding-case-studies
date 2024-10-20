@@ -40,15 +40,20 @@ public class InventoryServiceImpl implements InventoryService{
             throw new UnAuthorizedAccessException("Customer cannot create/update");
         }
 
-        Optional<Product> productOpt = productRepository.findProductById(productId);
-        if(productOpt.isEmpty()){
-            throw new ProductNotFoundException("Product Not Found");
+        Optional<Inventory> inventoryOptional = inventoryRepository.findProductById(productId);
+        if(inventoryOptional.isEmpty()){
+
+            Product product = this.productRepository.findProductById(productId).orElseThrow(() -> new ProductNotFoundException("Product Not found"));
+            Inventory inventory = new Inventory();
+            inventory.setProduct(product);
+            inventory.setQuantity(inventory.getQuantity() + quantity);
+            return inventoryRepository.save(inventory);
+        }else {
+            Inventory inventory = inventoryOptional.get();
+            inventory.setQuantity(inventory.getQuantity() + quantity);
+            return inventoryRepository.save(inventory);
         }
-        Product product = productOpt.get();
-        Inventory inventory = inventoryRepository.findProductById(productId).orElse(new Inventory());
-        inventory.setProduct(product);
-        inventory.setQuantity(inventory.getQuantity() + quantity);
-        return inventoryRepository.save(inventory);
+
     }
 
     @Override

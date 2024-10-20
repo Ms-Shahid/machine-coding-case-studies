@@ -1,5 +1,6 @@
 package com.example.ecom;
 
+import com.example.ecom.controllers.InventoryController;
 import com.example.ecom.dtos.*;
 import com.example.ecom.models.Product;
 import com.example.ecom.models.User;
